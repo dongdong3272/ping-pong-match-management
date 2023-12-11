@@ -1,13 +1,48 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { getMatchById } from "./api";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import Root from "./routes/Root";
+import Register from "./routes/Register";
+import Match from "./routes/Match";
+import MatchDetail from "./routes/MatchDetail";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.min.js";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    children: [
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/match",
+        element: <Match />,
+      },
+      {
+        path: "/match/:matchId",
+        element: <MatchDetail />,
+        loader: async ({ params }) => {
+          const match = await getMatchById(params.matchId);
+          return match;
+        },
+      },
+    ],
+  },
+]);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
